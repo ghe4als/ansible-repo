@@ -1,0 +1,30 @@
+- name: Initial Setup Playbook
+  hosts: all
+  tasks:
+    - name: Ping my hosts
+      ansible.builtin.ping:
+        data: "Pinging all hosts in the inventory"
+
+    - name: Store hostname in variable
+      ansible.builtin.command:
+        cmd: cat /etc/hostname
+      register: name_of_host
+
+    - name: Create file in /tmp with hostname
+      ansible.builtin.copy:
+        content: "This file was created on {{ inventory_hostname }} \n The hostname is: {{ name_of_host.stdout }}"
+        dest: "/tmp/{{ name_of_host.stdout }}"
+      when: name_of_host.rc == 0
+      #ignore_errors: yes # Do not stop if this step fails
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+      become: yes # Use sudo
+
+    - name: Upgrade system
+      ansible.builtin.apt:
+        upgrade: dist
+        autoremove: yes
+        autoclean: yes
+      become: yes

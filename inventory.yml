@@ -1,0 +1,20 @@
+all:
+  vars:
+    ansible_connection: ssh
+
+test_a:
+  hosts:
+    test-vm-1:
+      ansible_port: 2222
+      ansible_host: 127.0.0.1
+      ansible_user: ansible
+      ansible_password: ansible
+
+test_b:
+  hosts:
+    test-vm-2:
+      ansible_port: 2222
+      ansible_host: 127.0.0.1
+      ansible_user: ansible
+      ansible_password: ansible
+      ansible_connection: ssh

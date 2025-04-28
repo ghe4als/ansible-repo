@@ -1,0 +1,43 @@
+- name: Security Audit Playbook
+  hosts: all
+  tasks:
+
+    - name: Warning Message
+      ansible.builtin.debug:
+        msg: "System is being audited for security concerns... stand by!"
+
+    - name: List all installed packages with versions
+      ansible.builtin.command:
+        cmd: dpkg-query -W -f='${Package} ${Version}\n'
+      register: installed_packages
+
+    - name: Write package list to file
+      ansible.builtin.copy:
+        content: "{{ installed_packages.stdout }}"
+        dest: /tmp/package_audit.log
+
+    - name: Ensure wget is NOT installed
+      ansible.builtin.command:
+        cmd: dpkg -s wget
+      register: wget_check
+      ignore_errors: yes # Ignore errors if wget is not installed
+
+    - name: Fail if wget is installed
+      ansible.builtin.assert:
+        that:
+          - wget_check.rc != 0
+        fail_msg: "Wget is installed, which is not allowed."
+      when: wget_check.rc == 0
+
+    - name: Get kernel version
+      ansible.builtin.command:
+        cmd: uname -r
+      register: kernel_version_output
+
+    - name: Assert kernel version is valid
+      ansible.builtin.assert:
+        that:
+          - kernel_version_output.stdout is version(required_kernel_version, '>=')
+        fail_msg: "Kernel version is {{ kernel_version_output.stdout }} which is less than required {{ required_kernel_version }}"
+      vars:
+        required_kernel_version: "6.8.0"
