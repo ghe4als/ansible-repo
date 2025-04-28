@@ -1,3 +1,6 @@
+# This setup is for local development and learning purposes only.
+# It is not setup for security or production use.
+
 FROM ubuntu:22.04
 
 # Install SSH server and other useful tools
@@ -26,4 +29,3 @@ EXPOSE 22
 
 # Start SSH server
 CMD ["/usr/sbin/sshd", "-D"]
-

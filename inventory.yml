@@ -13,7 +13,7 @@ test_a:
 test_b:
   hosts:
     test-vm-2:
-      ansible_port: 2222
+      ansible_port: 2223
       ansible_host: 127.0.0.1
       ansible_user: ansible
       ansible_password: ansible

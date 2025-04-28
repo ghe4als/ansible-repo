@@ -15,12 +15,12 @@
         content: "This file was created on {{ inventory_hostname }} \n The hostname is: {{ name_of_host.stdout }}"
         dest: "/tmp/{{ name_of_host.stdout }}"
       when: name_of_host.rc == 0
-      #ignore_errors: yes # Do not stop if this step fails
+      ignore_errors: yes
 
     - name: Update apt cache
       ansible.builtin.apt:
         update_cache: yes
-      become: yes # Use sudo
+      become: yes
 
     - name: Upgrade system
       ansible.builtin.apt:

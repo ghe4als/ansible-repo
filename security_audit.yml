@@ -6,6 +6,7 @@
       ansible.builtin.debug:
         msg: "System is being audited for security concerns... stand by!"
 
+# Package audits
     - name: List all installed packages with versions
       ansible.builtin.command:
         cmd: dpkg-query -W -f='${Package} ${Version}\n'
@@ -20,7 +21,7 @@
       ansible.builtin.command:
         cmd: dpkg -s wget
       register: wget_check
-      ignore_errors: yes # Ignore errors if wget is not installed
+      ignore_errors: yes
 
     - name: Fail if wget is installed
       ansible.builtin.assert:
@@ -29,6 +30,7 @@
         fail_msg: "Wget is installed, which is not allowed."
       when: wget_check.rc == 0
 
+# Kernel version check
     - name: Get kernel version
       ansible.builtin.command:
         cmd: uname -r
